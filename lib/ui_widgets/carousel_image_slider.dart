@@ -11,7 +11,7 @@ class CarouselImageSlider extends StatefulWidget {
 }
 
 class _CarouselImageSliderState extends State<CarouselImageSlider> {
-  int currentIndex = 0;
+  final ValueNotifier<int> currentIndexNotifier = ValueNotifier<int>(0);
 
   List<String> carouselImg = [
     "https://cdn.dummyjson.com/products/images/tablets/iPad%20Mini%202021%20Starlight/thumbnail.png",
@@ -26,74 +26,81 @@ class _CarouselImageSliderState extends State<CarouselImageSlider> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
-
-
     return SizedBox(
       width: width,
       height: height * .4,
       child: Stack(
         children: [
 
-         CarouselSlider.builder(
-              itemCount: carouselImg.length,
-              itemBuilder: (context, index, pageIndex) {
-                return Container(
-                  width: width*.8,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.blue.shade100
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                     imageUrl: carouselImg[index],
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.high,
-                      placeholder: (_,url)=>Container(
-                        color: Colors.blue.shade100,
-                        width: width,
-                      ),
-                      errorWidget: (context, error, stackTrace)=>Container(
-                        color: Colors.grey.shade300,
-                        child: const Icon(
-                          Icons.broken_image,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
+
+          CarouselSlider.builder(
+            itemCount: carouselImg.length,
+            itemBuilder: (context, index, pageIndex) {
+              return Container(
+                width: width * .8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.blue.shade100,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: CachedNetworkImage(
+                    imageUrl: carouselImg[index],
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                    placeholder: (_, url) => Container(
+                      color: Colors.blue.shade100,
+                      width: width,
+                    ),
+                    errorWidget: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade300,
+                      child: const Icon(
+                        Icons.broken_image,
+                        size: 50,
+                        color: Colors.grey,
                       ),
                     ),
                   ),
-                );
+                ),
+              );
+            },
+            options: CarouselOptions(
+              autoPlay: true,
+              initialPage: 0,
+              enlargeCenterPage: true,
+              onPageChanged: (index, _) {
+                currentIndexNotifier.value = index;
               },
-              options: CarouselOptions(
-                autoPlay: true,
-                initialPage: 0,
-                enlargeCenterPage: true,
-                onPageChanged: (index, _) {
-                  setState(() {
-                    // print("only carousel widget is build");
-                    currentIndex = index;
-                  });
-                },
-              ),
             ),
+          ),
 
 
           Positioned(
             bottom: 15,
             left: 0,
             right: 0,
-            child: DotsIndicator(
-              decorator: const DotsDecorator(
-                color: Colors.grey,
-                activeColor: Colors.blue,
-              ),
-              dotsCount: carouselImg.length,
-              position: currentIndex,
+            child: ValueListenableBuilder<int>(
+              valueListenable: currentIndexNotifier,
+              builder: (context, currentIndex, _) {
+                return DotsIndicator(
+                  decorator: const DotsDecorator(
+                    color: Colors.grey,
+                    activeColor: Colors.blue,
+                  ),
+                  dotsCount: carouselImg.length,
+                  position: currentIndex,
+                );
+              },
             ),
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    currentIndexNotifier.dispose();
+    super.dispose();
   }
 }

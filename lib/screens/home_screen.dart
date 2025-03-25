@@ -1,12 +1,10 @@
-import 'package:cartfunctionlity/models/cart_model/cart_model.dart';
-import 'package:cartfunctionlity/reuse_widgets/index.dart';
-import 'package:cartfunctionlity/ui_widgets/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import '../bloc/product_bloc/index.dart';
 import '../bloc/cart_bloc/index.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../bloc/product_bloc/index.dart';
+import '../models/cart_model/cart_model.dart';
+import '../reuse_widgets/index.dart';
+import '../ui_widgets/index.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,14 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
     context.read<ProductBloc>().add(FetchAllProducts());
   }
 
-  double calculateDiscountedPrice(double actualAmount, double discountPercentage) {
-    return actualAmount*(1 - (discountPercentage/100));
-  }
-
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
@@ -40,10 +32,21 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 10),
 
               const CarouselImageSlider(),
 
+              const Divider(),
+
               const CategoryWiseSelection(),
+
+              const Divider(),
+
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: CustomText(text: "Feature Products",fontSize: 20,fontWeight: FontWeight.bold,),
+              ),
+
 
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -52,15 +55,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (productState is ProductLoadingState) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (productState is ProductLoadedState) {
-                      final products = productState.products;
+                      final products = productState.allProducts;
 
                       return BlocBuilder<CartBloc, CartState>(
                         builder: (context, cartState) {
                           final cartItems = cartState is CartLoadedState ? cartState.cartItems : [];
 
                           return GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(), // Prevent internal scrolling
-                            shrinkWrap: true, // Let GridView adjust its height within Column
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               crossAxisSpacing: 10,
@@ -69,86 +72,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             itemCount: products.length,
                             itemBuilder: (context, index) {
-                              final pdt = products[index];
-                              final isInCart = cartItems.any((item)=>item.id==pdt.id);
+                              final product = products[index];
+                              final isInCart = cartItems.any((item) => item.id == product.id);
 
-                              final discountPrice= calculateDiscountedPrice(pdt.price??0, pdt.discountPercentage??0);
-
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                elevation: 3,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: ClipRRect(
-                                        borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                                        child: CachedNetworkImage(
-                                          imageUrl: pdt.thumbnail??"",
-                                          width: double.infinity,
-                                          fit: BoxFit.contain,
-                                          placeholder: (_, url) => Container(color: Colors.blue.shade50),
-                                        ),
-                                      ),
+                              return ProductCard(
+                                product: product,
+                                isInCart: isInCart,
+                                onAddToCart: () {
+                                  final cartItem = CartModel(id: product.id, quantity: 1, product: product);
+                                  context.read<CartBloc>().add(AddToCart(cartItem));
+                                },
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProductDetailScreen(product: product),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            pdt.title ?? "",
-                                            style: const TextStyle(fontWeight: FontWeight.bold),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            pdt.brand ?? "",
-                                            style: const TextStyle(fontWeight: FontWeight.bold),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          CustomText(text: "${pdt.description}",textOverFlow: TextOverflow.ellipsis,maxLine: 2,fontSize: 5,),
-                                          Row(
-                                            children: [
-                                              RatingBarIndicator(
-                                                rating: pdt.rating??0,
-                                                itemCount: 5,
-                                                itemSize: 16,
-                                                itemBuilder:(context,index)=> const Icon(Icons.star, color:Colors.amber),
-                                              ),
-                                              Text("${pdt.rating??0}"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              CustomText(text: "\$${pdt.price??0}",fontSize: 8,textDecoration: TextDecoration.lineThrough,),
-                                              const SizedBox(width: 5,),
-                                              CustomText(text: "\$${discountPrice.toStringAsFixed(2)}",fontSize: 8,color: Colors.blue,)
-                                            ],
-                                          ),
-                                          CustomText(text: "${pdt.discountPercentage??0}% OFF",fontSize: 6,color: Colors.pink,),
-                                          ElevatedButton(
-                                            onPressed: isInCart
-                                                ? null
-                                                : () {
-                                              final cartItem = CartModel(
-                                                id: pdt.id,
-                                                title: pdt.title,
-                                                price: pdt.price,
-                                                images: pdt.images,
-                                                quantity: 1,
-                                              );
-                                              context.read<CartBloc>().add(AddToCart(cartItem));
-                                            },
-                                            child: Text(isInCart ? "Added" : "Add to Cart"),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  );
+                                },
                               );
                             },
                           );
@@ -162,10 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-
-
-
-
             ],
           ),
         ),
@@ -173,3 +110,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+

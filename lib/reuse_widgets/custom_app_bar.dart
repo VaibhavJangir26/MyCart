@@ -16,14 +16,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
 
-    final width= MediaQuery.of(context).size.width;
-    final height= MediaQuery.of(context).size.height;
 
 
 
     return AppBar(
           title: Text(widget.title),
-      backgroundColor: Colors.cyan,
         );
   }
 }

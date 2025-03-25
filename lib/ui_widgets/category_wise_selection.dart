@@ -12,30 +12,30 @@ class CategoryWiseSelection extends StatefulWidget {
 
 class _CategoryWiseSelectionState extends State<CategoryWiseSelection> {
   List<String> categoriesImages = [
+    "assets/images/categories/women_fashion.jpg", // Women's Fashion (
+    "assets/images/categories/women_bags.jpg",    // Women'
     "assets/images/categories/beauty.jpg",
     "assets/images/categories/electronics.jpg",
-    "assets/images/categories/home_living.jpeg",
-    "assets/images/categories/men_fashions.jpg",
-    "assets/images/categories/women_bags.jpg",
-    "assets/images/categories/women_fashion.jpg"
+    "assets/images/categories/home_living.jpeg",  // Home
+    "assets/images/categories/men_fashions.jpg",  // Men'
   ];
 
   List<String> categoriesImagesName = [
+    "Women's Fashions",
+    "Bags",
     "Beauty",
-    "Electronics",
+    "Laptops",
     "Home & Living",
     "Men's Fashions",
-    "Bags",
-    "Women's Fashions",
   ];
 
-  List<String> slugName=[
+  List<String> slugName = [
+    "womens-dresses",
+    "womens-bags",
     "beauty",
     "laptops",
     "home-decoration",
-    "womens-bags",
     "mens-shirts",
-    "womens-dresses",
   ];
 
   @override
@@ -47,37 +47,42 @@ class _CategoryWiseSelectionState extends State<CategoryWiseSelection> {
       width: width,
       height: height * 0.35,
       padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 4),
-        child: GridView.builder(
-          scrollDirection: Axis.horizontal,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-          ),
-          itemCount: categoriesImages.length,
-          itemBuilder: (context, index) {
-            final img = categoriesImages[index];
-            final category = categoriesImagesName[index];
-            return Column(
-              children: [
-                InkWell(
-                  onTap: (){
-                    PersistentNavBarNavigator.pushNewScreen(context,
-                        screen: CategoryDetailsScreen(
-                          slug: slugName[index],
-                        ),
-                        withNavBar: true,
-                    );
-                  },
-                  child: CircleAvatar(
-                    radius: 35,
-                    backgroundColor: Colors.blue.shade200,
-                    backgroundImage: AssetImage(img),
-                  ),
-                ),
-                CustomText(text: category,fontSize: 10,fontWeight: FontWeight.w700,)
-              ],
-            );
-          },
+      child: GridView.builder(
+        scrollDirection: Axis.horizontal,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
         ),
+        itemCount: categoriesImages.length,
+        itemBuilder: (context, index) {
+          final img = categoriesImages[index];
+          final category = categoriesImagesName[index];
+          return Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: CategoryDetailsScreen(
+                      slug: slugName[index],
+                    ),
+                    withNavBar: true,
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 35,
+                  backgroundColor: Colors.blue.shade200,
+                  backgroundImage: AssetImage(img),
+                ),
+              ),
+              CustomText(
+                text: category,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+              )
+            ],
+          );
+        },
+      ),
     );
   }
 }

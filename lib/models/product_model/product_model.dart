@@ -1,10 +1,6 @@
-
 import 'package:cartfunctionlity/models/product_model/index.dart';
 
-
-
 class ProductModel {
-
   final List<Product>? products;
 
   final int? total;
@@ -13,11 +9,7 @@ class ProductModel {
 
   final int? limit;
 
-  ProductModel({this.products,
-    this.total,
-    this.skip,
-    this.limit
-  });
+  ProductModel({this.products, this.total, this.skip, this.limit});
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(

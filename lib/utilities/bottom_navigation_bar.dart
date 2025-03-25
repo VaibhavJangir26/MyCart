@@ -66,7 +66,6 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
 
   List<PersistentBottomNavBarItem> navBarItems(int cartItemCount) {
     return [
-
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home),
         title: "Home",
@@ -74,31 +73,35 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
         inactiveColorPrimary: Colors.grey,
         inactiveIcon: const Icon(Icons.home_outlined),
       ),
-
       PersistentBottomNavBarItem(
         title: "Cart",
         activeColorPrimary: Colors.blue,
         inactiveColorPrimary: Colors.grey,
-
-        icon: cartItemCount>0 ? badges.Badge(
-          badgeStyle: badges.BadgeStyle(
-            badgeColor: Colors.blue.shade200,
-          ),
-          badgeContent: CustomText(text: "$cartItemCount",fontSize: 9,),
-          child: const Icon(Icons.shopping_cart),
-        ): const Icon(Icons.shopping_cart),
-
-
-        inactiveIcon: cartItemCount>0 ? badges.Badge(
-          badgeStyle: badges.BadgeStyle(
-            badgeColor: Colors.blue.shade200,
-          ),
-          badgeContent: CustomText(text: "$cartItemCount",fontSize: 9,),
-          child: const Icon(Icons.shopping_cart_outlined),
-        ): const Icon(Icons.shopping_cart_outlined),
+        icon: cartItemCount > 0
+            ? badges.Badge(
+                badgeStyle: badges.BadgeStyle(
+                  badgeColor: Colors.blue.shade200,
+                ),
+                badgeContent: CustomText(
+                  text: "$cartItemCount",
+                  fontSize: 9,
+                ),
+                child: const Icon(Icons.shopping_cart),
+              )
+            : const Icon(Icons.shopping_cart),
+        inactiveIcon: cartItemCount > 0
+            ? badges.Badge(
+                badgeStyle: badges.BadgeStyle(
+                  badgeColor: Colors.blue.shade200,
+                ),
+                badgeContent: CustomText(
+                  text: "$cartItemCount",
+                  fontSize: 9,
+                ),
+                child: const Icon(Icons.shopping_cart_outlined),
+              )
+            : const Icon(Icons.shopping_cart_outlined),
       ),
-
-
     ];
   }
 }

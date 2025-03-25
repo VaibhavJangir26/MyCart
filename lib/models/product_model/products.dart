@@ -63,7 +63,9 @@ class Product {
       brand: json['brand'],
       sku: json['sku'],
       weight: json['weight'],
-      dimensions: json['dimensions'] != null ? Dimension.fromJson(json['dimensions']) : null,
+      dimensions: json['dimensions'] != null
+          ? Dimension.fromJson(json['dimensions'])
+          : null,
       warrantyInformation: json['warrantyInformation'],
       shippingInformation: json['shippingInformation'],
       availabilityStatus: json['availabilityStatus'],
@@ -105,6 +107,3 @@ class Product {
     };
   }
 }
-
-
-

@@ -1,4 +1,3 @@
-
 class Review {
   final int? rating;
   final String? comment;
