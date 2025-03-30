@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               const SizedBox(height: 10),
 
               const CarouselImageSlider(),
@@ -103,6 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
+
+
             ],
           ),
         ),
