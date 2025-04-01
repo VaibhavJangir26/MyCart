@@ -1,4 +1,4 @@
-import 'package:cartfunctionlity/utilities/bottom_nav_bar_widget.dart';
+import 'package:cartfunctionlity/utilities/index.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -8,12 +8,14 @@ import '../methods/toast_msg.dart';
 import '../models/user_model/user_info_model.dart';
 
 class AuthController extends GetxController {
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   var isLoading = false.obs;
+  var isChecking = false.obs; // for email verification
   var userInfoModel = Rxn<UserInfoModel>();
-
 
   @override
   void onInit() {
@@ -25,30 +27,21 @@ class AuthController extends GetxController {
     if (firebaseUser == null) {
       userInfoModel.value = null;
     } else {
-      final doc = await _firestore
-          .collection('userDetails')
-          .doc(firebaseUser.uid)
-          .get();
+      final doc = await _firestore.collection('userDetails').doc(firebaseUser.uid).get();
       if (doc.exists) {
         userInfoModel.value = UserInfoModel.fromJson(doc.data()!);
       } else {
         userInfoModel.value = UserInfoModel(
           uuid: firebaseUser.uid,
-          displayName: firebaseUser.displayName ?? "Guest",
+          displayName: firebaseUser.displayName ?? "guest",
           email: firebaseUser.email ?? "guest@gmail.com",
         );
-        await _firestore
-            .collection('userDetails')
-            .doc(firebaseUser.uid)
-            .set(userInfoModel.value!.toJson());
+        await _firestore.collection('userDetails').doc(firebaseUser.uid).set(userInfoModel.value!.toJson());
       }
     }
   }
 
-
-
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-
+  // google sign in
   Future<User?> signInWithGoogle() async {
     isLoading.value = true;
     try {
@@ -59,7 +52,6 @@ class AuthController extends GetxController {
         return null;
       }
       final GoogleSignInAuthentication googleAuth = await googleSignInAccount.authentication;
-
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -69,12 +61,12 @@ class AuthController extends GetxController {
       final User? user = userCredential.user;
 
       if (user != null) {
-        final doc = await _firestore.collection('userDetail').doc(user.uid).get();
+        final doc = await _firestore.collection('userDetails').doc(user.uid).get();
         if (!doc.exists) {
           userInfoModel.value = UserInfoModel(
             uuid: user.uid,
-            displayName: user.displayName ?? "Unknown User",
-            email: user.email ?? "Unknown Email",
+            displayName: user.displayName ?? "guest",
+            email: user.email ?? "guest@gmail.com",
           );
           await _firestore.collection('userDetails').doc(user.uid).set(userInfoModel.value!.toJson());
         } else {
@@ -91,16 +83,21 @@ class AuthController extends GetxController {
     }
   }
 
-
+  // firebase login
   Future<void> login(String email, String password) async {
     isLoading.value = true;
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       final User? user = userCredential.user;
+
       if (user != null) {
-        final doc =
-            await _firestore.collection('userDetails').doc(user.uid).get();
+        if (!user.emailVerified) {
+          Get.bottomSheet(EmailVerificationBottomSheet());
+          ToastMsg.showToastMsg("Please verify your email before logging in.");
+          return;
+        }
+
+        final doc = await _firestore.collection('userDetails').doc(user.uid).get();
         if (doc.exists) {
           userInfoModel.value = UserInfoModel.fromJson(doc.data()!);
         }
@@ -113,11 +110,11 @@ class AuthController extends GetxController {
     }
   }
 
+  // firebase signup
   Future<void> signup(String email, String password, String name) async {
     isLoading.value = true;
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       final User? user = userCredential.user;
       if (user != null) {
         await user.updateDisplayName(name);
@@ -126,11 +123,9 @@ class AuthController extends GetxController {
           displayName: name,
           email: user.email ?? "guest@gmail.com",
         );
-        await _firestore
-            .collection('userDetails')
-            .doc(user.uid)
-            .set(userInfoModel.value!.toJson());
-        Get.offAll(() => const BottomNavBarWidget());
+        await _firestore.collection('userDetails').doc(user.uid).set(userInfoModel.value!.toJson());
+        await user.sendEmailVerification();
+        Get.bottomSheet(EmailVerificationBottomSheet());
       }
     } on FirebaseAuthException catch (e) {
       ToastMsg.showToastMsg(e.toString());
@@ -139,13 +134,44 @@ class AuthController extends GetxController {
     }
   }
 
+  // check for the verify the new register email
+  Future<void> verifyNow() async {
+    isChecking.value = true;
+    try {
+      await _auth.currentUser?.reload();
+      final user = _auth.currentUser;
+
+      if (user != null && user.emailVerified) {
+        ToastMsg.showToastMsg("Email Verified Successfully!");
+        Get.offAll(() => const BottomNavBarWidget());
+      } else {
+        ToastMsg.showToastMsg("Email not verified yet.");
+      }
+    } catch (e) {
+      ToastMsg.showToastMsg(e.toString());
+    } finally {
+      isChecking.value = false;
+    }
+  }
+
+  // for resend the email again
+  Future<void> resendVerificationEmail() async {
+    try {
+      await _auth.currentUser?.sendEmailVerification();
+      ToastMsg.showToastMsg("Verification email sent successfully");
+    } catch (e) {
+      ToastMsg.showToastMsg(e.toString());
+    }
+  }
+
+  // for changing password
   Future<void> changePassword(String newPassword) async {
     isLoading.value = true;
     try {
       User? user = _auth.currentUser;
       if (user != null) {
         await user.updatePassword(newPassword);
-        ToastMsg.showToastMsg("Password updated successfully");
+        ToastMsg.showToastMsg("Password updated successfully.");
       }
     } on FirebaseAuthException catch (e) {
       ToastMsg.showToastMsg(e.toString());
@@ -154,14 +180,16 @@ class AuthController extends GetxController {
     }
   }
 
+  // logout
   Future<void> logout() async {
     try {
-      await googleSignIn.disconnect();
-      await googleSignIn.signOut();
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
       await _auth.signOut();
       userInfoModel.value = null;
-      Get.offAll(() => const Login());
-    } on FirebaseAuthException catch (e) {
+      Get.offAll(()=> const Login());
+    } catch (e) {
       ToastMsg.showToastMsg(e.toString());
     }
   }

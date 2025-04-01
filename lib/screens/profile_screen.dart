@@ -1,7 +1,6 @@
 
-import 'package:cartfunctionlity/controller/auth_controller.dart';
-import 'package:cartfunctionlity/controller/image_picker_controller.dart';
-import 'package:cartfunctionlity/reuse_widgets/custom_text.dart';
+import 'package:cartfunctionlity/controller/index.dart';
+import 'package:cartfunctionlity/reuse_widgets/index.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -164,10 +163,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const Divider(),
         const ListTile(
           title:  Text("2. Contact us",),
-          subtitle:  Text("For questions regarding this policy, please contact us at support@nexchat.com or call at +91 1234567890"),
+          subtitle:  Text("For questions regarding this policy, please contact us at support@mycart.com or call at +91 1234567890"),
         ),
         const Divider(),
-
         ListTile(
           title:  const Text("3. Terms and Privacy Policy",),
           subtitle:  const Text("Read our Terms & Conditions, and Privacy policy"),
@@ -190,10 +188,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           )),
         ),
-
       ],
     );
   }
+
 
 
   Widget editProfile(){
@@ -247,6 +245,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
+
+
 
   Widget changeUserPassword() {
     final authController = Get.put(AuthController());
@@ -337,82 +337,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 
-//   Widget changeUserPassword() {
-//     final authController = Get.put(AuthController());
-//     return ListTile(
-//       leading: const Icon(Icons.key, color: Colors.blue),
-//       title: const Text("Change password"),
-//       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-//       onTap: () {
-//         Get.bottomSheet(Container(
-//           width: MediaQuery.of(context).size.width,
-//           padding: const EdgeInsets.all(13),
-//           decoration: BoxDecoration(
-//             borderRadius: const BorderRadius.only(
-//               topLeft: Radius.circular(20),
-//               topRight: Radius.circular(20),
-//             ),
-//             color: Theme.of(context).canvasColor,
-//           ),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               const Text("Enter new password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-//               const SizedBox(height: 10),
-//               Form(
-//                 key: changePasswordKey,
-//                 child: TextFormField(
-//                   controller: changePasswordController,
-//                   keyboardType: TextInputType.visiblePassword,
-//                   validator: (value) {
-//                     if (value!.isEmpty) {
-//                       return "Enter new password";
-//                     }
-//                     return null;
-//                   },
-//                   decoration: InputDecoration(
-//                     hintText: "New Password",
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(15),
-//                     ),
-//                     enabledBorder: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(15),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//               const SizedBox(height: 10),
-//               Align(
-//                 alignment: Alignment.center,
-//                 child: SizedBox(
-//                   width: MediaQuery.of(context).size.width * .6,
-//                   child: ElevatedButton(
-//                     style: ElevatedButton.styleFrom(
-//                       backgroundColor: Colors.teal,
-//                       shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(15),
-//                       ),
-//                     ),
-//                     onPressed: () {
-//                       if (changePasswordKey.currentState!.validate()) {
-//                         authController.changePassword(changePasswordController.text.toString());
-//                       }
-//                     },
-//                     child:  authController.isLoading.value ? const SizedBox(
-//                       width: 20,
-//                       height: 20,
-//                       child: CircularProgressIndicator(strokeWidth: 2.5,),
-//                     ) :const Text("Change password", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-//                   ),
-//                 ),
-//               )
-//             ],
-//           ),
-//         ));
-//       },
-//     );
-// }
 
   Widget logoutButton(){
     final authController= Get.put(AuthController());

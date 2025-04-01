@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomText extends StatelessWidget {
-  const CustomText({super.key,
-  required this.text,
-  this.fontSize,
-  this.fontWeight,
-  this.textAlign,
-  this.color,
-  this.textOverFlow,
-  this.maxLine,
-  this.textDecoration,
+  const CustomText({
+    super.key,
+    required this.text,
+    this.fontSize,
+    this.fontWeight,
+    this.textAlign,
+    this.color,
+    this.textOverFlow,
+    this.maxLine,
+    this.textDecoration,
+
   });
 
   final String text;
@@ -24,16 +27,17 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-    textAlign: textAlign,
-    overflow: textOverFlow,
-    maxLines: maxLine,
-    style: TextStyle(
-      fontWeight: fontWeight,
-      fontSize: fontSize,
-      color: color,
-      decoration: textDecoration
-    ),
+    return Text(
+      text,
+      textAlign: textAlign,
+      overflow: textOverFlow,
+      maxLines: maxLine,
+      style: TextStyle(
+        fontWeight: fontWeight,
+        fontSize: fontSize,
+        color: color,
+        decoration: textDecoration,
+      ),
     );
   }
 }

@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cartfunctionlity/screens/confirm_order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import '../bloc/cart_bloc/cart_bloc.dart';
-import '../bloc/cart_bloc/cart_state.dart';
-import '../bloc/cart_bloc/cart_event.dart';
-import '../reuse_widgets/custom_app_bar.dart';
-import '../reuse_widgets/custom_text.dart';
+import 'package:get/get.dart';
+import '../../bloc/cart_bloc/index.dart';
+import '../../reuse_widgets/index.dart';
+
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -271,14 +271,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        duration: const Duration(seconds: 1),
-                        elevation: 2,
-                        backgroundColor: Colors.pink.shade200,
-                        content: const CustomText(
-                          text: "Your order palace successfully.",
-                          color: Colors.white,
-                        )));
+                    Get.to(()=>const ConfirmOrderScreen());
                   },
                   child: const CustomText(
                     text: "Place Order",

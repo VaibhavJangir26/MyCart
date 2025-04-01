@@ -1,10 +1,15 @@
+
+import 'package:cartfunctionlity/reuse_ui_widget/display_horizontal_design_products.dart';
+import 'package:cartfunctionlity/reuse_ui_widget/display_specific_product.dart';
+import 'package:cartfunctionlity/reuse_widgets/custom_display_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/cart_bloc/index.dart';
-import '../bloc/product_bloc/index.dart';
-import '../models/cart_model/cart_model.dart';
-import '../reuse_widgets/index.dart';
-import '../ui_widgets/index.dart';
+import 'package:get/get.dart';
+import '../../bloc/cart_bloc/index.dart';
+import '../../bloc/product_bloc/index.dart';
+import '../../models/cart_model/cart_model.dart';
+import '../../reuse_widgets/index.dart';
+import '../../ui_widgets/index.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,6 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
+
+
               const SizedBox(height: 10),
 
               const CarouselImageSlider(),
@@ -41,11 +48,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const CategoryWiseSelection(),
 
-              const Divider(),
+              const CustomDisplayName(title: "TOP PICKS BEST PRICE",),
 
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: CustomText(text: "Feature Products",fontSize: 20,fontWeight: FontWeight.bold,),
+              const DisplayHorizontalDesignProducts(),
+
+
+              const DisplaySpecificProduct(
+                slugName: "home-decoration",
+                displayName: "HOME DECORATION",
+                color: Colors.cyan,
+              ),
+
+
+              const DisplaySpecificProduct(
+                slugName: "mens-watches",
+                displayName: "MENS WATCHES",
+                color: Colors.brown,
               ),
 
 
@@ -83,14 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   final cartItem = CartModel(id: product.id, quantity: 1, product: product);
                                   context.read<CartBloc>().add(AddToCart(cartItem));
                                 },
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProductDetailScreen(product: product),
-                                    ),
-                                  );
-                                },
+                                onTap: ()=>Get.to(()=>ProductDetailScreen(product: product)),
                               );
                             },
                           );
@@ -99,7 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     } else if (productState is ProductErrorState) {
                       return Center(child: Text(productState.message));
                     }
-
                     return const Center(child: CircularProgressIndicator());
                   },
                 ),
@@ -113,4 +123,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
+
+
+
+
 

@@ -29,7 +29,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         Padding(padding: const EdgeInsets.all(8),
           child: IconButton(onPressed: (){
             Get.to(()=>const ProfileScreen());
-          }, icon: const Icon(Icons.menu,color: Colors.blue,)),
+          }, icon: const Icon(Icons.settings,color: Colors.blue,)),
         ),
         
       ],
