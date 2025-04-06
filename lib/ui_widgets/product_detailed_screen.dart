@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cartfunctionlity/reuse_widgets/full_image_viewer.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,28 +96,31 @@ class ProductDetailScreen extends StatelessWidget {
       Product product, ValueNotifier<int> currentIndex, double width) {
     return Column(
       children: [
-        CarouselSlider.builder(
-          itemCount: product.images?.length ?? 0,
-          itemBuilder: (context, index, realIndex) {
-            return CachedNetworkImage(
-              imageUrl: product.images?[index] ?? "",
-              width: width,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => const Center(
-                  child: SpinKitWave(
-                color: Colors.blue,
-                size: 30,
-              )),
-              errorWidget: (context, error, _) =>
-                  const Icon(Icons.image_not_supported, size: 50),
-            );
-          },
-          options: CarouselOptions(
-            height: 250,
-            viewportFraction: 1,
-            onPageChanged: (index, reason) {
-              currentIndex.value = index;
+        InkWell(
+          onTap: ()=>FullImageViewer(imageUrls: product.images!, title: product.title!),
+          child: CarouselSlider.builder(
+            itemCount: product.images?.length ?? 0,
+            itemBuilder: (context, index, realIndex) {
+              return CachedNetworkImage(
+                imageUrl: product.images?[index] ?? "",
+                width: width,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                    child: SpinKitWave(
+                  color: Colors.blue,
+                  size: 30,
+                )),
+                errorWidget: (context, error, _) =>
+                    const Icon(Icons.image_not_supported, size: 50),
+              );
             },
+            options: CarouselOptions(
+              height: 250,
+              viewportFraction: 1,
+              onPageChanged: (index, reason) {
+                currentIndex.value = index;
+              },
+            ),
           ),
         ),
         ValueListenableBuilder<int>(

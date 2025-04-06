@@ -36,6 +36,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
         },
         child: const HomeScreen(),
       ),
+      const FilterScreen(),
       const CartScreen(),
     ];
   }
@@ -72,6 +73,13 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
         activeColorPrimary: Colors.blue,
         inactiveColorPrimary: Colors.grey,
         inactiveIcon: const Icon(Icons.home_outlined),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.category),
+        title: "Categories",
+        activeColorPrimary: Colors.blue,
+        inactiveColorPrimary: Colors.grey,
+        inactiveIcon: const Icon(Icons.category_outlined),
       ),
       PersistentBottomNavBarItem(
         title: "Cart",

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cartfunctionlity/reuse_widgets/index.dart';
+import 'package:cartfunctionlity/reuse_widgets/loading_animation.dart';
 import 'package:cartfunctionlity/ui_widgets/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,7 +43,7 @@ class _CategoryDetailsScreenState extends State<CategoryDetailsScreen> {
         child: BlocBuilder<ProductBloc, ProductState>(
           builder: (context, state) {
             if (state is ProductLoadingState) {
-              return const Center(child: ListViewLoadingShimmer());
+              return const LoadingAnimation();
             } else if (state is ProductLoadedState) {
               final List<Product> products =
                   state.categoryProducts[widget.slug] ?? [];

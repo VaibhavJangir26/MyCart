@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cartfunctionlity/reuse_ui_widget/empty_cart_animation.dart';
 import 'package:cartfunctionlity/screens/confirm_order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import '../../bloc/cart_bloc/index.dart';
 import '../../reuse_widgets/index.dart';
+import 'package:lottie/lottie.dart';
 
 
 class CartScreen extends StatefulWidget {
@@ -41,7 +43,7 @@ class _CartScreenState extends State<CartScreen> {
             } else if (state is CartLoadedState) {
               final cartItems = state.cartItems;
               if (cartItems.isEmpty) {
-                return const Center(child: Text("Your cart is empty."));
+                return const EmptyCartAnimation();
               }
 
               return Column(
@@ -172,7 +174,7 @@ class _CartScreenState extends State<CartScreen> {
                 ],
               );
             }
-            return const Center(child: Text("Your cart is empty"));
+            return const EmptyCartAnimation();
           },
         ),
       ),

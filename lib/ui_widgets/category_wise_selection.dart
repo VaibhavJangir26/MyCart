@@ -12,12 +12,12 @@ class CategoryWiseSelection extends StatefulWidget {
 
 class _CategoryWiseSelectionState extends State<CategoryWiseSelection> {
   List<String> categoriesImages = [
-    "assets/images/categories/women_fashion.jpg", // Women's Fashion (
-    "assets/images/categories/women_bags.jpg",    // Women'
+    "assets/images/categories/women_fashion.jpg",
+    "assets/images/categories/women_bags.jpg",
     "assets/images/categories/beauty.jpg",
     "assets/images/categories/electronics.jpg",
-    "assets/images/categories/home_living.jpeg",  // Home
-    "assets/images/categories/men_fashions.jpg",  // Men'
+    "assets/images/categories/home_living.jpeg",
+    "assets/images/categories/men_fashions.jpg"
   ];
 
   List<String> categoriesImagesName = [
