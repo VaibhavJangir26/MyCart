@@ -7,7 +7,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import '../../bloc/cart_bloc/index.dart';
 import '../../reuse_widgets/index.dart';
-import 'package:lottie/lottie.dart';
 
 
 class CartScreen extends StatefulWidget {

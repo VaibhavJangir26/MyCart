@@ -6,7 +6,7 @@ import '../reuse_widgets/index.dart';
 class EmailVerificationBottomSheet extends StatelessWidget {
   EmailVerificationBottomSheet({super.key});
 
-  /// this is email verification ui bottom sheet
+
 
   final VerificationController verificationController =
       Get.put(VerificationController());

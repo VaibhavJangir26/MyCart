@@ -12,7 +12,7 @@ class EmptyCartAnimation extends StatelessWidget {
       children: [
         Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width/2,
+            width: MediaQuery.of(context).size.width*.8,
             height: MediaQuery.of(context).size.height/2,
             child: Lottie.asset("assets/json_files/emptyCart.json",
             filterQuality: FilterQuality.medium,

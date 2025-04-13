@@ -38,9 +38,6 @@ dependencies:
   firebase_core: ^3.2.0
   firebase_auth: ^5.1.2
   google_sign_in: ^6.2.1
-  firebase_analytics: ^11.2.0
-
-  firebase_storage: ^12.1.1
   cloud_firestore: ^5.1.0
   font_awesome_flutter: ^10.7.0
   http: ^1.2.2
@@ -63,6 +60,7 @@ dependencies:
   persistent_bottom_nav_bar: ^6.2.1
   internet_connection_checker_plus: ^2.7.0
   intl:
+  flutter_dotenv: ^5.2.1
   image_picker: ^1.1.2
   cached_network_image:
 
@@ -112,7 +110,6 @@ flutter:
      - assets/images/categories/
      - assets/images/icons/
      - assets/json_files/
-     - assets/images/subcategory/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -8,14 +8,14 @@ import '../methods/toast_msg.dart';
 import '../models/user_model/user_info_model.dart';
 
 class AuthController extends GetxController {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   var isLoading = false.obs;
-  var isChecking = false.obs; // for email verification
+  var isChecking = false.obs;
   var userInfoModel = Rxn<UserInfoModel>();
+  var isGoogleSignIn = false.obs;
 
   @override
   void onInit() {
@@ -27,7 +27,10 @@ class AuthController extends GetxController {
     if (firebaseUser == null) {
       userInfoModel.value = null;
     } else {
-      final doc = await _firestore.collection('userDetails').doc(firebaseUser.uid).get();
+      final doc = await _firestore
+          .collection('userDetails')
+          .doc(firebaseUser.uid)
+          .get();
       if (doc.exists) {
         userInfoModel.value = UserInfoModel.fromJson(doc.data()!);
       } else {
@@ -36,41 +39,52 @@ class AuthController extends GetxController {
           displayName: firebaseUser.displayName ?? "guest",
           email: firebaseUser.email ?? "guest@gmail.com",
         );
-        await _firestore.collection('userDetails').doc(firebaseUser.uid).set(userInfoModel.value!.toJson());
+        await _firestore
+            .collection('userDetails')
+            .doc(firebaseUser.uid)
+            .set(userInfoModel.value!.toJson());
       }
     }
   }
 
   // google sign in
   Future<User?> signInWithGoogle() async {
-    isLoading.value = true;
+    isGoogleSignIn.value = true;
     try {
       await googleSignIn.signOut();
       await _auth.signOut();
-      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
       if (googleSignInAccount == null) {
         return null;
       }
-      final GoogleSignInAuthentication googleAuth = await googleSignInAccount.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleSignInAccount.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
       final User? user = userCredential.user;
 
       if (user != null) {
-        final doc = await _firestore.collection('userDetails').doc(user.uid).get();
+        final doc =
+            await _firestore.collection('userDetails').doc(user.uid).get();
         if (!doc.exists) {
           userInfoModel.value = UserInfoModel(
             uuid: user.uid,
             displayName: user.displayName ?? "guest",
             email: user.email ?? "guest@gmail.com",
           );
-          await _firestore.collection('userDetails').doc(user.uid).set(userInfoModel.value!.toJson());
+          await _firestore
+              .collection('userDetails')
+              .doc(user.uid)
+              .set(userInfoModel.value!.toJson());
         } else {
-          userInfoModel.value = UserInfoModel.fromJson(doc.data() as Map<String, dynamic>);
+          userInfoModel.value =
+              UserInfoModel.fromJson(doc.data() as Map<String, dynamic>);
         }
         Get.offAll(() => const BottomNavBarWidget());
       }
@@ -79,7 +93,7 @@ class AuthController extends GetxController {
       ToastMsg.showToastMsg(e.toString());
       return null;
     } finally {
-      isLoading.value = false;
+      isGoogleSignIn.value = false;
     }
   }
 
@@ -87,7 +101,8 @@ class AuthController extends GetxController {
   Future<void> login(String email, String password) async {
     isLoading.value = true;
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       final User? user = userCredential.user;
 
       if (user != null) {
@@ -97,7 +112,8 @@ class AuthController extends GetxController {
           return;
         }
 
-        final doc = await _firestore.collection('userDetails').doc(user.uid).get();
+        final doc =
+            await _firestore.collection('userDetails').doc(user.uid).get();
         if (doc.exists) {
           userInfoModel.value = UserInfoModel.fromJson(doc.data()!);
         }
@@ -114,7 +130,8 @@ class AuthController extends GetxController {
   Future<void> signup(String email, String password, String name) async {
     isLoading.value = true;
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
       final User? user = userCredential.user;
       if (user != null) {
         await user.updateDisplayName(name);
@@ -123,7 +140,10 @@ class AuthController extends GetxController {
           displayName: name,
           email: user.email ?? "guest@gmail.com",
         );
-        await _firestore.collection('userDetails').doc(user.uid).set(userInfoModel.value!.toJson());
+        await _firestore
+            .collection('userDetails')
+            .doc(user.uid)
+            .set(userInfoModel.value!.toJson());
         await user.sendEmailVerification();
         Get.bottomSheet(EmailVerificationBottomSheet());
       }
@@ -164,14 +184,14 @@ class AuthController extends GetxController {
     }
   }
 
-  // for changing password
+  // for change password fun
   Future<void> changePassword(String newPassword) async {
     isLoading.value = true;
     try {
       User? user = _auth.currentUser;
       if (user != null) {
         await user.updatePassword(newPassword);
-        ToastMsg.showToastMsg("Password updated successfully.");
+        ToastMsg.showToastMsg("Password updated successfully");
       }
     } on FirebaseAuthException catch (e) {
       ToastMsg.showToastMsg(e.toString());
@@ -180,7 +200,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // logout
+  // logout fun
   Future<void> logout() async {
     try {
       if (await googleSignIn.isSignedIn()) {
@@ -188,7 +208,7 @@ class AuthController extends GetxController {
       }
       await _auth.signOut();
       userInfoModel.value = null;
-      Get.offAll(()=> const Login());
+      Get.offAll(() => const Login());
     } catch (e) {
       ToastMsg.showToastMsg(e.toString());
     }

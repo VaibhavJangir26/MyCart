@@ -17,7 +17,7 @@ class VerificationController extends GetxController {
     checkVerificationStatus();
   }
 
-  /// it will automatically check for email verification
+  // auto verification of email
   void checkVerificationStatus() {
     isChecking.value = true;
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
@@ -34,7 +34,7 @@ class VerificationController extends GetxController {
     });
   }
 
-  /// it will check manually for email verification
+  // it will check manually for email verification
   Future<void> verifyNow() async {
     isChecking.value = true;
     User? user = _auth.currentUser;
@@ -49,17 +49,17 @@ class VerificationController extends GetxController {
     isChecking.value = false;
   }
 
-  /// resend the verification email again
+  // resend the verification email again
   Future<void> resendVerificationEmail() async {
     try {
       await _auth.currentUser?.sendEmailVerification();
-      Get.snackbar("Email Sent", "Check your inbox or spam.",);
+      Get.snackbar('Email Sent',"Check your inbox or spam in your mail",);
     } catch (e) {
       Get.snackbar("Error", e.toString());
     }
   }
 
-  /// it will show the bottom sheet for new user to verify the email
+  // it will show the bottom sheet for new user to verify the email
   void showVerificationBottomSheet() {
     Get.bottomSheet(
       EmailVerificationBottomSheet(),

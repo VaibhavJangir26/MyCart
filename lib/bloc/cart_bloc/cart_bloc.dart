@@ -60,7 +60,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   double _calculateTotal(List<CartModel> items) {
-    return items.fold(
+    return items.fold( // allow us to give operation on initial rather then we assume
         0, (total, item) => total + ((item.product?.price)! * item.quantity!));
   }
 }

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cartfunctionlity/reuse_widgets/full_image_viewer.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,9 +95,7 @@ class ProductDetailScreen extends StatelessWidget {
       Product product, ValueNotifier<int> currentIndex, double width) {
     return Column(
       children: [
-        InkWell(
-          onTap: ()=>FullImageViewer(imageUrls: product.images!, title: product.title!),
-          child: CarouselSlider.builder(
+         CarouselSlider.builder(
             itemCount: product.images?.length ?? 0,
             itemBuilder: (context, index, realIndex) {
               return CachedNetworkImage(
@@ -121,11 +118,10 @@ class ProductDetailScreen extends StatelessWidget {
                 currentIndex.value = index;
               },
             ),
-          ),
         ),
         ValueListenableBuilder<int>(
           valueListenable: currentIndex,
-          builder: (context, index, child) {
+          builder: (context, index, _) {
             return DotsIndicator(
               dotsCount: product.images?.length ?? 0,
               position: index,

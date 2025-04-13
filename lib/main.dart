@@ -1,6 +1,7 @@
 import 'package:cartfunctionlity/authentication/index.dart';
 import 'package:cartfunctionlity/bloc/cart_bloc/cart_bloc.dart';
 import 'package:cartfunctionlity/bloc/product_bloc/index.dart';
+import 'package:cartfunctionlity/bloc/search_bloc/index.dart';
 import 'package:cartfunctionlity/firebase_options.dart';
 import 'package:cartfunctionlity/repositories/index.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ProductBloc>(
           create: (_) => ProductBloc(productRepository: ProductRepository()),
+        ),
+        BlocProvider<SearchProductBloc>(
+          create: (_) => SearchProductBloc(productRepository: ProductRepository()),
         ),
         BlocProvider(create: (_) => CartBloc()),
       ],

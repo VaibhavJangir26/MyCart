@@ -45,4 +45,26 @@ class ProductApiService {
       throw Exception("error ${e.toString()}");
     }
   }
+
+
+  // search api
+  Future<List<ProductModel>> fetchSearchApiData(String searchQuery) async {
+    String baseSearchApi = ApiKeys.searchApiKey;
+    try {
+      var response = await http.get(Uri.parse("$baseSearchApi=$searchQuery"));
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        List<ProductModel> products = (jsonData['products'] as List)
+            .map((json) => ProductModel.fromJson(json))
+            .toList();
+        return products;
+      }
+      else {
+        throw Exception("failed to search ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("error ${e.toString()}");
+    }
+  }
+
 }

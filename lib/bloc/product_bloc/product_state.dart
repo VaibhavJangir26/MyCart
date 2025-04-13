@@ -9,7 +9,6 @@ class ProductLoadingState extends ProductState {}
 class ProductLoadedState extends ProductState {
   final List<Product> allProducts;
   final Map<String, List<Product>> categoryProducts;
-
   ProductLoadedState(this.allProducts, this.categoryProducts);
 }
 
@@ -17,3 +16,9 @@ class ProductErrorState extends ProductState {
   final String message;
   ProductErrorState(this.message);
 }
+
+class ProductSearchState extends ProductState {
+  final List<Product> searchedProducts;
+  ProductSearchState(this.searchedProducts);
+}
+

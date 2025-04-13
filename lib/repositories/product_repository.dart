@@ -4,6 +4,8 @@ import '../models/product_model/product_model.dart';
 import '../api_keys.dart';
 
 class ProductRepository {
+
+  // to fetch all the products
   Future<ProductModel> fetchAllProducts() async {
     try {
       final response = await http.get(Uri.parse(ApiKeys.productApiKey));
@@ -19,6 +21,7 @@ class ProductRepository {
     }
   }
 
+  // to fetch the category products
   Future<ProductModel> fetchCategoryProducts(String categorySlug) async {
     try {
       final String categoryUrl =
@@ -36,4 +39,26 @@ class ProductRepository {
       throw Exception("error fetching category pdt $e");
     }
   }
+
+
+  // for searching purpose
+  Future<ProductModel> searchTheProducts(String searchQuery) async {
+    try {
+      const searchUrl = ApiKeys.searchApiKey;
+
+      final response = await http.get(Uri.parse("$searchUrl=$searchQuery"));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        return ProductModel.fromJson(jsonData);
+      } else {
+        throw Exception("error while searching ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("error $e");
+    }
+  }
+
+
+
 }
